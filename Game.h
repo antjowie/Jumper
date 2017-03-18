@@ -7,15 +7,24 @@
 class Game
 {
 public:
+	struct GameConfig {
+		sf::Keyboard::Key up, left, down, right, jump;
+		sf::Mouse::Button shoot;
+		bool debugMode;
+	};
+
 	sf::RenderWindow window;
 	std::stack<GameState*> states;
 
 	TextureManager texmngr;
+	GameConfig config;
 
 	void PushState(GameState* const state);
 	void PopState();
 	void SwitchState(GameState* const state);
 	GameState* PeekState() const;
+
+	void UpdateConfig(const GameConfig newConfig);
 
 	void Loop();
 
@@ -23,6 +32,9 @@ public:
 	~Game();
 
 private:
+	void BootConfig();
+	void DefaultConfig();
+
 	// Makes sure only one instance of this class exists
 	static bool initialized;
 };

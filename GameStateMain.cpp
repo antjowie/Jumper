@@ -68,7 +68,7 @@ GameStateMain::GameStateMain(Game * const game):
 	play.action = MenuAction::PLAY;
 	play.text = "Start game";
 	play.area = sf::IntRect(0,330,WINDOW_SIZE.x,60);
-
+	 
 	MenuItem options;
 	options.action = MenuAction::OPTIONS;
 	options.text = "Options";
@@ -96,27 +96,29 @@ GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordina
 	for (auto button : buttons) {
 		if (button.area.contains(coordinates))
 		{
-			switch (button.action)
-			{
-			case MenuAction::PLAY:
-				std::cout << "PLAY\n";
-				break;
-			case MenuAction::OPTIONS:
-				std::cout << "OPTIONS\n";
-				break;
-			case MenuAction::QUIT:
-				std::cout << "QUIT\n";
-				break;
-			case MenuAction::NOTHING:
-				std::cout << "NOTHING\n";
-				break;
-			default:
-				std::cout << "DEFAULT\n";
-				break;
-			}
+			if(game->config.debugMode)
+				switch (button.action)
+				{
+				case MenuAction::PLAY:
+					std::cout << "PLAY\n";
+					break;
+				case MenuAction::OPTIONS:
+					std::cout << "OPTIONS\n";
+					break;
+				case MenuAction::QUIT:
+					std::cout << "QUIT\n";
+					break;
+				case MenuAction::NOTHING:
+					std::cout << "NOTHING\n";
+					break;
+				default:
+					std::cout << "DEFAULT\n";
+					break;
+				}
 			return button.action;
 		}
 	}
-	std::cout << "NOTHING\n";
+	if (game->config.debugMode) std::cout << "NOTHING\n";
 	return MenuAction::NOTHING;
+	
 }
