@@ -10,7 +10,7 @@ public:
 	virtual void Draw() = 0;
 
 	GameState(Game* const game);
-private:
+protected:
 	Game* const game;
 
 	// Makes sure that only one instance exists
