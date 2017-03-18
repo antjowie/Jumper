@@ -75,6 +75,7 @@ Game::Game()
 
 	BootConfig();
 	texmngr.LoadTexture("mainMenuBackground", "media/mainMenuBackground.png");
+	texmngr.LoadFont("airstream", "media/airstream.ttf");
 }
 
 Game::~Game()
@@ -111,7 +112,7 @@ void Game::BootConfig()
 			
 			tempConfig.jump = (sf::Keyboard::Key)configInts[4];
 			tempConfig.shoot = (sf::Mouse::Button)configInts[5];
-			tempConfig.debugMode = (configInts[6] == 0 ? true : false);
+			tempConfig.debugMode = (configInts[6] == 0 ? false : true);
 
 			UpdateConfig(tempConfig);
 		}

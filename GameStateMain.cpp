@@ -46,15 +46,19 @@ void GameStateMain::Draw()
 	sf::RectangleShape rectangle;
 	rectangle.setFillColor(sf::Color(0,0,0, 100));
 
-	//sf::Text text("N/A", game->texmngr.GetFont("airstream"));
-	//text.setFillColor(sf::Color::Black);
-
+	sf::Text text("N/A", game->texmngr.GetFont("airstream"));
+	text.setScale(sf::Vector2f(1.5f, 1.5f));
 
 	game->window.draw(background);
 	for (auto button : buttons) {
 		rectangle.setSize(sf::Vector2f(float(button.area.width), float(button.area.height)));
 		rectangle.setPosition(sf::Vector2f(float(button.area.left), float(button.area.top)));
+		text.setPosition(sf::Vector2f(float(button.area.left + 300), float(button.area.top)));
+		text.setString(button.text);
+		if(button.area.contains(sf::Mouse::getPosition(game->window))) text.setFillColor(sf::Color::Red);
+		else text.setFillColor(sf::Color::Black);
 		
+		game->window.draw(text);
 		game->window.draw(rectangle);
 	}
 }
@@ -94,7 +98,9 @@ void GameStateMain::LoadGame()
 GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordinates)
 {
 	for (auto button : buttons) {
-		if (button.area.contains(coordinates))
+		if (button.area.contains(
+			(sf::Vector2i)game->window.mapPixelToCoords(coordinates)))
+			// We use this line because pixels are different when window gets resized
 		{
 			if(game->config.debugMode)
 				switch (button.action)
@@ -120,5 +126,4 @@ GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordina
 	}
 	if (game->config.debugMode) std::cout << "NOTHING\n";
 	return MenuAction::NOTHING;
-	
 }
