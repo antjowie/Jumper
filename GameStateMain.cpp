@@ -1,5 +1,6 @@
 #include "GameStateMain.h"
 #include "Game.h"
+#include "GameStatePlay.h"
 #include <iostream>
 
 void GameStateMain::Input()
@@ -29,9 +30,6 @@ void GameStateMain::Input()
 				game->window.close();
 				break;
 			}
-			break;
-
-		case sf::Event::Resized:
 			break;
 		}
 	}
@@ -70,7 +68,7 @@ GameStateMain::GameStateMain(Game * const game):
 	
 	MenuItem play;
 	play.action = MenuAction::PLAY;
-	play.text = "Start game";
+	play.text = "Play";
 	play.area = sf::IntRect(0,330,WINDOW_SIZE.x,60);
 	 
 	MenuItem options;
@@ -80,7 +78,7 @@ GameStateMain::GameStateMain(Game * const game):
 
 	MenuItem quit;
 	quit.action = MenuAction::QUIT;
-	quit.text = "Quit game";
+	quit.text = "Exit";
 	quit.area = sf::IntRect(0, 490, WINDOW_SIZE.x, 60);
 
 	buttons.reserve(3);
@@ -93,14 +91,15 @@ GameStateMain::GameStateMain(Game * const game):
 
 void GameStateMain::LoadGame()
 {
+	game->PushState(new GameStatePlay(game));
 }
 
 GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordinates)
 {
 	for (auto button : buttons) {
 		if (button.area.contains(
-			(sf::Vector2i)game->window.mapPixelToCoords(coordinates)))
 			// We use this line because pixels are different when window gets resized
+			(sf::Vector2i)game->window.mapPixelToCoords(coordinates)))
 		{
 			if(game->config.debugMode)
 				switch (button.action)

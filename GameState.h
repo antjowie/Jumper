@@ -12,7 +12,4 @@ public:
 	GameState(Game* const game);
 protected:
 	Game* const game;
-
-	// Makes sure that only one instance exists
-	static bool initialized;
 };

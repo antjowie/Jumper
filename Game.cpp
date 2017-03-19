@@ -75,6 +75,7 @@ Game::Game()
 
 	BootConfig();
 	texmngr.LoadTexture("mainMenuBackground", "media/mainMenuBackground.png");
+	texmngr.LoadTexture("scrollBackground1.1", "media/scrollBackground1.1.png");
 	texmngr.LoadFont("airstream", "media/airstream.ttf");
 }
 
@@ -102,7 +103,7 @@ void Game::BootConfig()
 		}
 		// Loads old config file
 		else {
-			std::cout << "good size";
+			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size();
 			GameConfig tempConfig;
 			
 			tempConfig.up = (sf::Keyboard::Key)configInts[0];
