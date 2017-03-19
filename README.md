@@ -3,7 +3,6 @@ What is this project about?
 -
 This project is a 2D scroller game made with c++ and the SFML library. It's main purpose is for me to gain a better understanding of the SFML library. I am also experimenting with spritesheets (by making my own animation handler class) and very basic file io (like loading a config file). The content in not my primarly focus and my art skills could use some improving (nonetheless did I find making a spritesheet quite entertaining).
 
---- 
 Resources
 -
 - You can find the SFML library @https://www.sfml-dev.org/.
