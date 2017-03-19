@@ -33,7 +33,21 @@ void GameStateMain::Input()
 			break;
 
 		case sf::Event::Resized:
-			background.scale(background.getLocalBounds().width / event.size.width, background.getLocalBounds().height / event.size.height);
+			game->window.setView(sf::View(sf::FloatRect(0.f, 0.f, (float)event.size.width, (float)event.size.height)));
+
+			int i = 3;
+			const float MULTIPLIER_WIDTH = (float)event.size.width/ (float)background.getLocalBounds().width;
+			const float MULTIPLIER_HEIGHT = (float)event.size.height / (float)background.getLocalBounds().height;
+			for (std::vector<MenuItem>::iterator button = buttons.begin() ; button != buttons.end(); ++button)
+			{
+				button->area.top = event.size.height / 6 * i++;
+				button->area.height = 60 * MULTIPLIER_HEIGHT;
+				button->area.width *= MULTIPLIER_WIDTH;
+			}
+
+
+			background.setScale((float)event.size.width / (float)background.getLocalBounds().width, (float)event.size.height / (float)background.getLocalBounds().height);
+			
 			break;
 		}
 	}
@@ -51,6 +65,7 @@ void GameStateMain::Draw()
 
 	sf::Text text("N/A", game->texmngr.GetFont("airstream"));
 	text.setScale(sf::Vector2f(1.5f, 1.5f));
+	text.scale((float)game->window.getSize().x / 1280, (float)game->window.getSize().y / 720);
 	
 	game->window.draw(background);
 	for (auto button : buttons) {
@@ -74,17 +89,17 @@ GameStateMain::GameStateMain(Game * const game):
 	MenuItem play;
 	play.action = MenuAction::PLAY;
 	play.text = "Play";
-	play.area = sf::IntRect(0,330,WINDOW_SIZE.x,60);
+	play.area = sf::IntRect(0,WINDOW_SIZE.y / 6*3,WINDOW_SIZE.x,60);
 	 
 	MenuItem options;
 	options.action = MenuAction::OPTIONS;
 	options.text = "Options";
-	options.area = sf::IntRect(0, 410, WINDOW_SIZE.x, 60);
+	options.area = sf::IntRect(0, WINDOW_SIZE.y / 6 * 4, WINDOW_SIZE.x, 60);
 
 	MenuItem quit;
 	quit.action = MenuAction::QUIT;
 	quit.text = "Exit";
-	quit.area = sf::IntRect(0, 490, WINDOW_SIZE.x, 60);
+	quit.area = sf::IntRect(0, WINDOW_SIZE.y / 6 * 5, WINDOW_SIZE.x, 60);
 
 	buttons.reserve(3);
 	buttons.push_back(play);
@@ -106,7 +121,8 @@ GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordina
 			// We use this line because pixels are different when window gets resized
 			(sf::Vector2i)game->window.mapPixelToCoords(coordinates)))
 		{
-			if(game->config.debugMode)
+			if (game->config.debugMode) {
+				std::cout << "Mouse x: " << coordinates.x << "\ty: " << coordinates.y << '\n';
 				switch (button.action)
 				{
 				case MenuAction::PLAY:
@@ -125,9 +141,10 @@ GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordina
 					std::cout << "DEFAULT\n";
 					break;
 				}
+			}
 			return button.action;
 		}
 	}
-	if (game->config.debugMode) std::cout << "NOTHING\n";
+	if (game->config.debugMode) std::cout << "Mouse x: " << coordinates.x << "\ty: " << coordinates.y << '\n' << "NOTHING\n";
 	return MenuAction::NOTHING;
 }
