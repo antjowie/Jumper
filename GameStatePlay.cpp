@@ -1,7 +1,6 @@
 #include "GameStatePlay.h"
 #include "Game.h"
 #include <iostream>
-#include <math.h>
 
 void GameStatePlay::Input()
 {
@@ -16,17 +15,20 @@ void GameStatePlay::Input()
 
 void GameStatePlay::Update(const float dt)
 {
-	std::cout << scrollBackground.getLocalBounds().width << '\n';
+	if (game->config.debugMode) std::cout << "scrollMoved = " << scrollMoved << '\n';
 	if (scrollMoved > 1280 * 2) {
+		if(game->config.debugMode) std::cout << "Shifting scrollBackground from right to left\n";
 		scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
-		scrollMoved = fmod(scrollMoved,1280.f * 2.f);
+		scrollMoved -= 1280.f * 2.f;
 	}
 	else if (scrollMoved < 0) {
-
+		if (game->config.debugMode) std::cout << "Shifting scrollBackground from left to right\n";
+		scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(-1280*2, 0), view));
+		scrollMoved += 1280.f * 2.f;
 	}
 
-	view.move(9.1f, 0);
-	scrollMoved += 9.1f;
+	view.move(-9.1f, 0);
+	scrollMoved -= 9.1f;
 } 
 
 void GameStatePlay::Draw()

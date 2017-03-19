@@ -35,6 +35,7 @@ void Game::UpdateConfig(const GameConfig newConfig)
 
 	std::ofstream update("config.txt", std::ios::trunc);
 	
+	// Not sure if this the cleanest solution. It's the best I could come up with.
 	update << config.up << '\n'
 		<< config.left << '\n'
 		<< config.down << '\n'
@@ -44,6 +45,9 @@ void Game::UpdateConfig(const GameConfig newConfig)
 		<< config.debugMode;
 
 	update.close();
+
+	if (config.debugMode) std::cout << "Debug mode enabled.\n";
+	else std::cout << "Debug mode disabled.\n";
 }
 
 void Game::Loop()
@@ -103,7 +107,6 @@ void Game::BootConfig()
 		}
 		// Loads old config file
 		else {
-			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size();
 			GameConfig tempConfig;
 			
 			tempConfig.up = (sf::Keyboard::Key)configInts[0];
@@ -116,6 +119,8 @@ void Game::BootConfig()
 			tempConfig.debugMode = (configInts[6] == 0 ? false : true);
 
 			UpdateConfig(tempConfig);
+			
+			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size();
 		}
 	}
 	else
