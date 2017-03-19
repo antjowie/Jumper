@@ -31,6 +31,10 @@ void GameStateMain::Input()
 				break;
 			}
 			break;
+
+		case sf::Event::Resized:
+			background.scale(background.getLocalBounds().width / event.size.width, background.getLocalBounds().height / event.size.height);
+			break;
 		}
 	}
 }

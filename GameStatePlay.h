@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.h"
+#include "Player.h"
 #include <SFML\Graphics.hpp>
 
 class GameStatePlay :
@@ -18,6 +19,8 @@ private:
 	
 	sf::View view;
 
+	sf::Vector2f movement;
+	Player player;
 	sf::Sprite scrollBackground;
 };
 

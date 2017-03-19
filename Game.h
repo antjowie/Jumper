@@ -14,11 +14,12 @@ public:
 	};
 
 	sf::RenderWindow window;
-	std::stack<GameState*> states;
 
 	TextureManager texmngr;
 	GameConfig config;
 
+	bool PopThisState;
+	
 	void PushState(GameState* const state);
 	void PopState();
 	void SwitchState(GameState* const state);
@@ -32,6 +33,8 @@ public:
 	~Game();
 
 private:
+	std::stack<GameState*> states;
+	
 	void BootConfig();
 	void DefaultConfig();
 

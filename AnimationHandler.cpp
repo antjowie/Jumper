@@ -29,12 +29,11 @@ void AnimationHandler::Update(const float dt)
 	}
 	// Updates frame
 	currentFrame.left = animNum*anim[animType].frameSize.width;
-	frame.setTextureRect(currentFrame);
 }
 
-void AnimationHandler::Draw(sf::RenderWindow & window)
+sf::IntRect AnimationHandler::GetFrame() const
 {
-	if (animType != -1)	window.draw(frame);
+	return currentFrame;
 }
 
 void AnimationHandler::ChangeAnimation(const int animType)
@@ -46,9 +45,8 @@ void AnimationHandler::ChangeAnimation(const int animType)
 	this->animType = animType;
 }
 
-AnimationHandler::AnimationHandler(const std::vector<Animation>& animations, const sf::Texture & texture):
+AnimationHandler::AnimationHandler(const std::vector<Animation> animations):
 	anim(animations),
 	elapsedTime(0)
 {
-	frame.setTexture(texture);
 }

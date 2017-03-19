@@ -16,10 +16,10 @@ class AnimationHandler
 {
 public:
 	void Update(const float dt);
-	void Draw(sf::RenderWindow& window);
+	sf::IntRect GetFrame() const;
 	void ChangeAnimation(const int animType = -1);
 
-	AnimationHandler(const std::vector<Animation>& animations, const sf::Texture& texture);
+	AnimationHandler(const std::vector<Animation> animations);
 
 private:
 	sf::IntRect firstFrame;
@@ -30,6 +30,5 @@ private:
 	// Horizontal
 	int animNum;
 
-	sf::Sprite frame;
 	float elapsedTime;
 };

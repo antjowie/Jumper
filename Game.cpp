@@ -65,10 +65,16 @@ void Game::Loop()
 		window.clear(sf::Color::Black);
 		PeekState()->Draw();
 		window.display();
+	
+		if (PopThisState) {
+			PopThisState = false;
+			PopState();
+		}
 	}
 }
 
-Game::Game()
+Game::Game():
+	PopThisState(false)
 {
 	// Makes sure only one instance of the class is created
 	assert(!initialized);
@@ -135,8 +141,8 @@ void Game::DefaultConfig()
 	GameConfig tempConfig;
 	tempConfig.up = sf::Keyboard::W;
 	tempConfig.left = sf::Keyboard::A;
-	tempConfig.down = sf::Keyboard::D;
-	tempConfig.right = sf::Keyboard::R;
+	tempConfig.down = sf::Keyboard::S;
+	tempConfig.right = sf::Keyboard::D;
 
 	tempConfig.jump = sf::Keyboard::Space;
 	tempConfig.shoot = sf::Mouse::Button::Left;
