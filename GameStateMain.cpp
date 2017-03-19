@@ -18,7 +18,7 @@ void GameStateMain::Input()
 			break;
 
 		case sf::Event::MouseButtonPressed:
-			switch (HandleClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)))
+			switch (HandleClick(game->window.mapCoordsToPixel(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y))))
 			{
 			case MenuAction::PLAY:
 				LoadGame();
@@ -37,6 +37,7 @@ void GameStateMain::Input()
 
 void GameStateMain::Update(const float dt)
 {
+	background.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0)));
 }
 
 void GameStateMain::Draw()
@@ -46,12 +47,12 @@ void GameStateMain::Draw()
 
 	sf::Text text("N/A", game->texmngr.GetFont("airstream"));
 	text.setScale(sf::Vector2f(1.5f, 1.5f));
-
+	
 	game->window.draw(background);
 	for (auto button : buttons) {
 		rectangle.setSize(sf::Vector2f(float(button.area.width), float(button.area.height)));
-		rectangle.setPosition(sf::Vector2f(float(button.area.left), float(button.area.top)));
-		text.setPosition(sf::Vector2f(float(button.area.left + 300), float(button.area.top)));
+		rectangle.setPosition(game->window.mapPixelToCoords(sf::Vector2i(button.area.left, button.area.top)));
+		text.setPosition(game->window.mapPixelToCoords(sf::Vector2i(button.area.left + 300, button.area.top)));
 		text.setString(button.text);
 		if(button.area.contains(sf::Mouse::getPosition(game->window))) text.setFillColor(sf::Color::Red);
 		else text.setFillColor(sf::Color::Black);
