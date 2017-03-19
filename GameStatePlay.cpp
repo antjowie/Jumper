@@ -27,8 +27,9 @@ void GameStatePlay::Update(const float dt)
 		scrollMoved += 1280.f * 2.f;
 	}
 
-	view.move(-9.1f, 0);
-	scrollMoved -= 9.1f;
+	sf::Vector2f moved(1, 0);
+	view.move(moved);
+	scrollMoved += moved.x;
 } 
 
 void GameStatePlay::Draw()
