@@ -7,15 +7,15 @@ class GameStatePlay :
 	public GameState
 {
 public:	
-
 	void Input();
 	void Update(const float dt);
 	void Draw();
+	void Resize();
 
 	GameStatePlay(Game* const game);
 
 private:
-	float scrollMoved;
+	int scrollMoved;
 	
 	sf::View view;
 

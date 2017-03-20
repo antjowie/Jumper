@@ -14,6 +14,8 @@ void Game::PopState()
 	if (!states.empty()) {
 		delete states.top();
 		states.pop();
+		// Although we should use peekstate, this spares us one operation (probably doesn't make an impact though)
+		if (!states.empty()) states.top()->Resize();
 	}
 }
 
@@ -85,7 +87,8 @@ Game::Game():
 
 	BootConfig();
 	texmngr.LoadTexture("mainMenuBackground", "media/mainMenuBackground.png");
-	texmngr.LoadTexture("scrollBackground1.1", "media/scrollBackground1.1.png");
+	texmngr.LoadTexture("scrollBackground1.5", "media/scrollBackground1.5.png");
+	texmngr.GetTexture("scrollBackground1.5").setRepeated(true);
 	texmngr.LoadFont("airstream", "media/airstream.ttf");
 }
 
@@ -126,7 +129,7 @@ void Game::BootConfig()
 
 			UpdateConfig(tempConfig);
 			
-			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size();
+			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size() << '\n';
 		}
 	}
 	else

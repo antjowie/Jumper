@@ -10,6 +10,7 @@ public:
 	virtual void Input();
 	virtual void Update(const float dt);
 	virtual void Draw();
+	virtual void Resize();
 
 	GameStateMain(Game* const game);
 

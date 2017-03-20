@@ -33,21 +33,7 @@ void GameStateMain::Input()
 			break;
 
 		case sf::Event::Resized:
-			game->window.setView(sf::View(sf::FloatRect(0.f, 0.f, (float)event.size.width, (float)event.size.height)));
-
-			int i = 3;
-			const float MULTIPLIER_WIDTH = (float)event.size.width/ (float)background.getLocalBounds().width;
-			const float MULTIPLIER_HEIGHT = (float)event.size.height / (float)background.getLocalBounds().height;
-			for (std::vector<MenuItem>::iterator button = buttons.begin() ; button != buttons.end(); ++button)
-			{
-				button->area.top = event.size.height / 6 * i++;
-				button->area.height = 60 * MULTIPLIER_HEIGHT;
-				button->area.width *= MULTIPLIER_WIDTH;
-			}
-
-
-			background.setScale((float)event.size.width / (float)background.getLocalBounds().width, (float)event.size.height / (float)background.getLocalBounds().height);
-			
+			Resize();
 			break;
 		}
 	}
@@ -81,6 +67,23 @@ void GameStateMain::Draw()
 	}
 }
 
+void GameStateMain::Resize()
+{
+	game->window.setView(sf::View(sf::FloatRect(0.f, 0.f, (float)game->window.getSize().x, (float)game->window.getSize().y)));
+
+	int i = 3;
+	for (std::vector<MenuItem>::iterator button = buttons.begin(); button != buttons.end(); ++button)
+	{
+		button->area.top = game->window.getSize().y / 6 * i++;
+		button->area.height = 60 * (game->window.getSize().y / (float)background.getLocalBounds().height);
+		button->area.width *= game->window.getSize().x / (float)background.getLocalBounds().width;
+	}
+
+	background.setScale(game->window.getSize().x / (float)background.getLocalBounds().width, (float)game->window.getSize().y / (float)background.getLocalBounds().height);
+
+
+}
+
 GameStateMain::GameStateMain(Game * const game):
 	GameState(game)
 {
@@ -107,6 +110,7 @@ GameStateMain::GameStateMain(Game * const game):
 	buttons.push_back(quit);
 
 	background.setTexture(game->texmngr.GetTexture("mainMenuBackground"));
+	Resize();
 }
 
 void GameStateMain::LoadGame()

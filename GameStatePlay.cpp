@@ -17,42 +17,31 @@ void GameStatePlay::Input()
 			break;
 
 		case sf::Event::Resized:
-			scrollMoved = 0;
+			Resize();
 			break;
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(game->config.up)) movement -= sf::Vector2f(0, 2.f);
-	else if (sf::Keyboard::isKeyPressed(game->config.left)) movement -= sf::Vector2f(2.f, 0);
-	else if (sf::Keyboard::isKeyPressed(game->config.down))	movement += sf::Vector2f(0, 2.f);
-	else if (sf::Keyboard::isKeyPressed(game->config.right)) movement += sf::Vector2f(2.f, 0);
-	else if (sf::Keyboard::isKeyPressed(game->config.jump)) movement += sf::Vector2f(0, -2.f);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) game->PopThisState = true;
+	if (sf::Keyboard::isKeyPressed(game->config.left)) movement -= sf::Vector2f(2.f, 0);
+	if (sf::Keyboard::isKeyPressed(game->config.down))	movement += sf::Vector2f(0, 2.f);
+	if (sf::Keyboard::isKeyPressed(game->config.right)) movement += sf::Vector2f(2.f, 0);
+	if (sf::Keyboard::isKeyPressed(game->config.jump)) movement += sf::Vector2f(0, -2.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) game->PopThisState = true;
 
 	movement*= 0.8f;
+	scrollMoved += (int)movement.x;
 	if (game->config.debugMode) std::cout << "Movement x: " << movement.x << "\ty: " << movement.y << '\n';
 	
-
 }
 
 void GameStatePlay::Update(const float dt)
 {
-	const int WINDOW_WIDHT = (int)game->window.getSize().x;
-	std::cout << WINDOW_WIDHT << '\n';
+
+	scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
+	scrollBackground.setTextureRect(sf::IntRect(scrollMoved, 0 , game->window.getSize().x, 720));
+
+	view.move(movement.x, 0);
 	if (game->config.debugMode) std::cout << "scrollMoved = " << scrollMoved << '\n';
-	if (scrollMoved > WINDOW_WIDHT * 2) {
-		if(game->config.debugMode) std::cout << "Shifting scrollBackground from right to left\n";
-		scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
-		scrollMoved -= WINDOW_WIDHT * 2.f;
-	}
-	else if (scrollMoved < 0) {
-		if (game->config.debugMode) std::cout << "Shifting scrollBackground from left to right\n";
-		scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(WINDOW_WIDHT*2, 0), view));
-		scrollMoved += WINDOW_WIDHT * 2.f;
-	}
-
-
-	view.move(movement.x,0);
-	scrollMoved += movement.x;
 } 
 
 void GameStatePlay::Draw()
@@ -61,6 +50,13 @@ void GameStatePlay::Draw()
 	player.Draw(game->window);
 
 	game->window.setView(view);
+}
+
+void GameStatePlay::Resize()
+{
+	view.setSize((sf::Vector2f)game->window.getSize());
+	view.setCenter((sf::Vector2f)game->window.getSize() * 0.5f);
+	scrollBackground.setScale(game->window.getSize().x / (scrollBackground.getLocalBounds().width / 2), game->window.getSize().y / scrollBackground.getLocalBounds().height);
 }
 
 GameStatePlay::GameStatePlay(Game* const game) :
@@ -78,13 +74,6 @@ GameStatePlay::GameStatePlay(Game* const game) :
 	movement(0,0),
 	scrollMoved(0)
 {
-	sf::Vector2f WINDOW_SIZE = (sf::Vector2f)game->window.getSize();
-	view.setSize(WINDOW_SIZE);
-	WINDOW_SIZE * 0.5f;
-	view.setCenter(WINDOW_SIZE);
-
-	scrollBackground.setTexture(game->texmngr.GetTexture("scrollBackground1.1"));
-	scrollBackground.setTextureRect(sf::IntRect(0, 0, 1280*3, 720));
-	scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
-
+	scrollBackground.setTexture(game->texmngr.GetTexture("scrollBackground1.5"));
+	Resize();
 }
