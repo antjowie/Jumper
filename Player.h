@@ -1,18 +1,19 @@
 #pragma once
 #include "AnimationHandler.h"
 #include <SFML\Graphics.hpp>
+#include <vector>
 
 class Player
 {
 public:
-	sf::Sprite sprite;
-	
-	void Move(sf::Vector2f movement, const float dt);
-	void Shoot(const sf::Vector2f mousePos);
+	void Input(const sf::Vector2f movement);
+	void Update(const float dt);
 	void Draw(sf::RenderWindow& window);
 
-	Player(const sf::Texture& texture, const std::vector<Animation> anim);
+	Player(const sf::Texture& texture, const std::vector<Animation> animations);
+
 private:
 	AnimationHandler anim;
+	sf::Sprite sprite;
 };
 

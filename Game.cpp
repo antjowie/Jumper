@@ -2,7 +2,6 @@
 #include <cassert>
 #include <fstream>
 #include <string>
-#include <iostream>
 
 void Game::PushState(GameState* const state)
 {
@@ -43,13 +42,9 @@ void Game::UpdateConfig(const GameConfig newConfig)
 		<< config.down << '\n'
 		<< config.right << '\n'
 		<< config.jump << '\n'
-		<< config.shoot << '\n'
-		<< config.debugMode;
+		<< config.shoot;
 
 	update.close();
-
-	if (config.debugMode) std::cout << "Debug mode enabled.\n";
-	else std::cout << "Debug mode disabled.\n";
 }
 
 void Game::Loop()
@@ -58,8 +53,7 @@ void Game::Loop()
 	float dt;
 
 	while (window.isOpen()) {
-		dt = clock.getElapsedTime().asSeconds();
-
+		dt = clock.restart().asSeconds();
 		if (PeekState() == nullptr) continue;
 
 		PeekState()->Input();
@@ -86,6 +80,7 @@ Game::Game():
 	window.setFramerateLimit(60);
 
 	BootConfig();
+	texmngr.LoadTexture("playerSpritesheet", "media/playerSpritesheet.png");
 	texmngr.LoadTexture("mainMenuBackground", "media/mainMenuBackground.png");
 	texmngr.LoadTexture("scrollBackground1.5", "media/scrollBackground1.5.png");
 	texmngr.GetTexture("scrollBackground1.5").setRepeated(true);
@@ -103,7 +98,7 @@ void Game::BootConfig()
 	if (checkConfig) {
 		std::string configLine;
 		std::vector<int> configInts;
-		configInts.reserve(7);
+		configInts.reserve(6);
 
 		// Loads the file into a vector
 		while (std::getline(checkConfig, configLine)) {
@@ -125,11 +120,8 @@ void Game::BootConfig()
 			
 			tempConfig.jump = (sf::Keyboard::Key)configInts[4];
 			tempConfig.shoot = (sf::Mouse::Button)configInts[5];
-			tempConfig.debugMode = (configInts[6] == 0 ? false : true);
 
-			UpdateConfig(tempConfig);
-			
-			if(config.debugMode) std::cout << "configInts size allowed (must be 7) is " << configInts.size() << '\n';
+			UpdateConfig(tempConfig);	
 		}
 	}
 	else
@@ -149,8 +141,6 @@ void Game::DefaultConfig()
 
 	tempConfig.jump = sf::Keyboard::Space;
 	tempConfig.shoot = sf::Mouse::Button::Left;
-
-	tempConfig.debugMode = false;
 
 	UpdateConfig(tempConfig);
 }

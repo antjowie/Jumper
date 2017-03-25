@@ -1,34 +1,56 @@
 #include "AnimationHandler.h"
 #include <math.h>
 
-Animation::Animation(const sf::IntRect frameSize, const float animDuration, const int animLength, const bool isLooping):
-	frameSize(frameSize),
-	animDuration(animDuration),
-	animLength(animLength),
-	isLooping(isLooping)
+Animation::Animation(const unsigned int startFrame, const unsigned int endFrame, const float duration, const bool isRepeated):
+	startFrame(startFrame),
+	endFrame(endFrame),
+	duration(duration),
+	isRepeated(isRepeated)
 {
+}
+
+int Animation::GetLength() const
+{
+	return endFrame - startFrame + 1;
+}
+
+void AnimationHandler::AddAnimation(const Animation anim)
+{
+	animations.push_back(anim);
+}
+
+void AnimationHandler::ChangeAnimation(unsigned int animID)
+{
+	if (animID == currentAnim || animID > animations.size()) return;
+	elapsed = 0.0f;
+	currentAnim = animID;
+	
+	sf::IntRect rect;
+	rect = frameSize;
+	rect.top = rect.height * animID;
+	currentFrame = rect;
 }
 
 void AnimationHandler::Update(const float dt)
 {
-	elapsedTime += dt;
-	// Cancel update if animation is invalid
-	if (animType == -1 || animType > (int)anim.size()) return;
-	
-	animNum += int(elapsedTime) / int(anim[animType].animDuration);
-	// Makes sure we stay in bounds of the animation
-	if (animNum > anim[animType].animLength) {
-		if (!anim[animType].isLooping) {
-			elapsedTime = fmod(elapsedTime, anim[animType].animDuration);
-			currentFrame = firstFrame;
-		}
-		else {
-			elapsedTime -= dt;
-			--animNum;
-		}
+	if (currentAnim >= animations.size() || currentAnim < 0) return; 
+
+	const float duration = animations[currentAnim].duration;
+	if (int((elapsed + dt) / duration) > int((elapsed / duration))) {
+		int frame = int((elapsed + dt) / duration);
+		if (!animations[currentAnim].isRepeated && frame > animations.at(currentAnim).endFrame) 
+			frame = animations[currentAnim].endFrame;
+		else frame %= animations[currentAnim].GetLength();
+
+		sf::IntRect rect = frameSize;
+		rect.left = rect.width * frame;
+		rect.top = rect.height * currentAnim;
+		currentFrame = rect;
 	}
-	// Updates frame
-	currentFrame.left = animNum*anim[animType].frameSize.width;
+
+	elapsed += dt;
+	if (elapsed > duration * animations[currentAnim].GetLength())
+		fmod(elapsed, duration);
 }
 
 sf::IntRect AnimationHandler::GetFrame() const
@@ -36,17 +58,15 @@ sf::IntRect AnimationHandler::GetFrame() const
 	return currentFrame;
 }
 
-void AnimationHandler::ChangeAnimation(const int animType)
+AnimationHandler::AnimationHandler():
+	elapsed(0), 
+	currentAnim(-1)
 {
-	if (animType == -1 || this->animType == animType || animType > (int)anim.size()) return;
-	
-	elapsedTime = fmod(elapsedTime, anim[animType].animDuration);
-	firstFrame = currentFrame = anim[animType].frameSize;
-	this->animType = animType;
 }
 
-AnimationHandler::AnimationHandler(const std::vector<Animation> animations):
-	anim(animations),
-	elapsedTime(0)
+AnimationHandler::AnimationHandler(const sf::IntRect frameSize):
+	elapsed(0),
+	currentAnim(-1),
+	frameSize(frameSize)
 {
 }

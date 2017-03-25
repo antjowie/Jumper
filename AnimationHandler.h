@@ -4,31 +4,33 @@
 
 struct Animation
 {
-	sf::IntRect frameSize;
-	float animDuration;
-	int animLength;
-	bool isLooping;
+	unsigned int startFrame;
+	unsigned int endFrame;
 
-	Animation(const sf::IntRect frameSize, const float animDuration, const int animLength, const bool isLooping = true);
+	float duration;
+	bool isRepeated;
+
+	Animation(const unsigned int startFrame, const unsigned int endFrame, const float duration, const bool isRepeated = true);
+	int GetLength() const;
 };
 
 class AnimationHandler
 {
 public:
+	void AddAnimation(const Animation anim);
+	void ChangeAnimation(unsigned int animID);
 	void Update(const float dt);
 	sf::IntRect GetFrame() const;
-	void ChangeAnimation(const int animType = -1);
 
-	AnimationHandler(const std::vector<Animation> animations);
+	AnimationHandler();
+	AnimationHandler(const sf::IntRect frameSize);
 
 private:
-	sf::IntRect firstFrame;
+	sf::IntRect frameSize;
 	sf::IntRect currentFrame;
-	std::vector<Animation> anim;
-	// Vetical
-	int animType;
-	// Horizontal
-	int animNum;
 
-	float elapsedTime;
+	std::vector<Animation> animations;
+
+	int currentAnim;
+	float elapsed;
 };

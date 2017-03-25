@@ -1,7 +1,6 @@
 #include "GameStateMain.h"
 #include "Game.h"
 #include "GameStatePlay.h"
-#include <iostream>
 
 void GameStateMain::Input()
 {
@@ -121,34 +120,8 @@ void GameStateMain::LoadGame()
 GameStateMain::MenuAction GameStateMain::HandleClick(const sf::Vector2i coordinates)
 {
 	for (auto button : buttons) {
-		if (button.area.contains(
-			// We use this line because pixels are different when window gets resized
-			(sf::Vector2i)game->window.mapPixelToCoords(coordinates)))
-		{
-			if (game->config.debugMode) {
-				std::cout << "Mouse x: " << coordinates.x << "\ty: " << coordinates.y << '\n';
-				switch (button.action)
-				{
-				case MenuAction::PLAY:
-					std::cout << "PLAY\n";
-					break;
-				case MenuAction::OPTIONS:
-					std::cout << "OPTIONS\n";
-					break;
-				case MenuAction::QUIT:
-					std::cout << "QUIT\n";
-					break;
-				case MenuAction::NOTHING:
-					std::cout << "NOTHING\n";
-					break;
-				default:
-					std::cout << "DEFAULT\n";
-					break;
-				}
-			}
-			return button.action;
-		}
+		// We use this line because pixels are different when window gets resized
+		if (button.area.contains((sf::Vector2i)game->window.mapPixelToCoords(coordinates)))	return button.action;
 	}
-	if (game->config.debugMode) std::cout << "Mouse x: " << coordinates.x << "\ty: " << coordinates.y << '\n' << "NOTHING\n";
 	return MenuAction::NOTHING;
 }

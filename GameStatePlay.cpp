@@ -1,6 +1,5 @@
 #include "GameStatePlay.h"
 #include "Game.h"
-#include <iostream>
 
 void GameStatePlay::Input()
 {
@@ -29,24 +28,27 @@ void GameStatePlay::Input()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) game->PopThisState = true;
 
 	movement*= 0.8f;
+	if (movement.x < 0.1f && movement.x > -0.1f) movement.x = 0;
+	if (movement.y < 0.1f && movement.y > -0.1f) movement.y = 0;
+
 	scrollMoved += (int)movement.x;
-	if (game->config.debugMode) std::cout << "Movement x: " << movement.x << "\ty: " << movement.y << '\n';
-	
 }
 
 void GameStatePlay::Update(const float dt)
 {
-
 	scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
 	scrollBackground.setTextureRect(sf::IntRect(scrollMoved, 0 , game->window.getSize().x, 720));
 
+	player.Input(movement);
+	player.Update(dt);
+
 	view.move(movement.x, 0);
-	if (game->config.debugMode) std::cout << "scrollMoved = " << scrollMoved << '\n';
 } 
 
 void GameStatePlay::Draw()
 {
 	game->window.draw(scrollBackground);
+
 	player.Draw(game->window);
 
 	game->window.setView(view);
@@ -56,20 +58,21 @@ void GameStatePlay::Resize()
 {
 	view.setSize((sf::Vector2f)game->window.getSize());
 	view.setCenter((sf::Vector2f)game->window.getSize() * 0.5f);
-	scrollBackground.setScale(game->window.getSize().x / (scrollBackground.getLocalBounds().width / 2), game->window.getSize().y / scrollBackground.getLocalBounds().height);
+	scrollBackground.setScale(game->window.getSize().x / 1280, game->window.getSize().y / scrollBackground.getLocalBounds().height);
+	// 1280 is the fixed size of the scrollBackground to show
 }
 
 GameStatePlay::GameStatePlay(Game* const game) :
 	GameState(game),
 	player(game->texmngr.GetTexture("playerSpritesheet"),
 	{
-		Animation(sf::IntRect(0,0,32,32),2.0f,4,true),			// Static
-		Animation(sf::IntRect(0,32,32,32),2.0f,4,true),			// Jump right
-		Animation(sf::IntRect(0,32 * 2,32,32),2.0f,4,false),	// Fall right
-		Animation(sf::IntRect(0,32 * 3,32,32),2.0f,4,true),		// Jump left
-		Animation(sf::IntRect(0,32 * 4,32,32),2.0f,4,false),	// Fall left
-		Animation(sf::IntRect(0,32 * 5,32,32),2.0f,4,true),		// Run right
-		Animation(sf::IntRect(0,32 * 6,32,32),2.0f,4,true)		// Run left
+		Animation(0,3,0.2f),		// Static
+		Animation(0,3,0.2f,false),	// Jump right
+		Animation(0,3,0.2f,false),	// Fall right
+		Animation(0,3,0.2f,false),	// Jump left
+		Animation(0,3,0.2f,false),	// Fall left
+		Animation(0,3,0.2f),		// Run right
+		Animation(0,3,0.2f)			// Run left
 	}),
 	movement(0,0),
 	scrollMoved(0)
