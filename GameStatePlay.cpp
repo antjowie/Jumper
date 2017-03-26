@@ -31,13 +31,16 @@ void GameStatePlay::Input()
 	if (movement.x < 0.1f && movement.x > -0.1f) movement.x = 0;
 	if (movement.y < 0.1f && movement.y > -0.1f) movement.y = 0;
 
-	scrollMoved += (int)movement.x;
+	scrollMoved.x += (int)movement.x * 0.2f;
+	scrollMoved.y += (int)movement.y * 0.2f;
+	if(scrollMoved.y > 0) scrollMoved.y = 0;
+	else if (scrollMoved.y < -360) scrollMoved.y = -360;
 }
 
 void GameStatePlay::Update(const float dt)
 {
 	scrollBackground.setPosition(game->window.mapPixelToCoords(sf::Vector2i(0, 0), view));
-	scrollBackground.setTextureRect(sf::IntRect(scrollMoved, 0 , game->window.getSize().x, 720));
+	scrollBackground.setTextureRect(sf::IntRect(scrollMoved.x, 360 + scrollMoved.y, game->window.getSize().x, 360));
 
 	player.Input(movement);
 	player.Update(dt);
@@ -58,7 +61,7 @@ void GameStatePlay::Resize()
 {
 	view.setSize((sf::Vector2f)game->window.getSize());
 	view.setCenter((sf::Vector2f)game->window.getSize() * 0.5f);
-	scrollBackground.setScale(game->window.getSize().x / 1280, game->window.getSize().y / scrollBackground.getLocalBounds().height);
+	scrollBackground.setScale(game->window.getSize().x / 640, game->window.getSize().y / (scrollBackground.getLocalBounds().height / 2));
 	// 1280 is the fixed size of the scrollBackground to show
 }
 
@@ -66,17 +69,17 @@ GameStatePlay::GameStatePlay(Game* const game) :
 	GameState(game),
 	player(game->texmngr.GetTexture("playerSpritesheet"),
 	{
-		Animation(0,3,0.2f),		// Static
-		Animation(0,3,0.2f,false),	// Jump right
-		Animation(0,3,0.2f,false),	// Fall right
-		Animation(0,3,0.2f,false),	// Jump left
-		Animation(0,3,0.2f,false),	// Fall left
-		Animation(0,3,0.2f),		// Run right
-		Animation(0,3,0.2f)			// Run left
+		Animation(0,3,0.5f),		// Static
+		Animation(0,3,0.1f,false),	// Jump right
+		Animation(0,3,0.1f,false),	// Fall right
+		Animation(0,3,0.1f,false),	// Jump left
+		Animation(0,3,0.1f,false),	// Fall left
+		Animation(0,3,0.15f),		// Run right
+		Animation(0,3,0.15f)		// Run left
 	}),
 	movement(0,0),
-	scrollMoved(0)
+	scrollMoved(0,0)
 {
-	scrollBackground.setTexture(game->texmngr.GetTexture("scrollBackground1.5"));
+	scrollBackground.setTexture(game->texmngr.GetTexture("scrollBackground1.6"));
 	Resize();
 }

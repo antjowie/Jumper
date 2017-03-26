@@ -91,7 +91,7 @@ GameStateMain::GameStateMain(Game * const game):
 	MenuItem play;
 	play.action = MenuAction::PLAY;
 	play.text = "Play";
-	play.area = sf::IntRect(0,WINDOW_SIZE.y / 6*3,WINDOW_SIZE.x,60);
+	play.area = sf::IntRect(0, WINDOW_SIZE.y / 6 * 3, WINDOW_SIZE.x, 60);
 	 
 	MenuItem options;
 	options.action = MenuAction::OPTIONS;

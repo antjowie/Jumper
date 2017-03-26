@@ -15,11 +15,11 @@ public:
 	GameStatePlay(Game* const game);
 
 private:
-	int scrollMoved;
+	sf::Vector2f movement;
+	sf::Vector2i scrollMoved;
 	
 	sf::View view;
 
-	sf::Vector2f movement;
 	Player player;
 	sf::Sprite scrollBackground;
 };

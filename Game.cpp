@@ -82,8 +82,9 @@ Game::Game():
 	BootConfig();
 	texmngr.LoadTexture("playerSpritesheet", "media/playerSpritesheet.png");
 	texmngr.LoadTexture("mainMenuBackground", "media/mainMenuBackground.png");
-	texmngr.LoadTexture("scrollBackground1.5", "media/scrollBackground1.5.png");
-	texmngr.GetTexture("scrollBackground1.5").setRepeated(true);
+	texmngr.LoadTexture("scrollBackground1.6", "media/scrollBackground1.6.png");
+	texmngr.GetTexture("scrollBackground1.6").setRepeated(true);
+	texmngr.GetTexture("scrollBackground1.6").setSmooth(true);
 	texmngr.LoadFont("airstream", "media/airstream.ttf");
 }
 
