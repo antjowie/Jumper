@@ -30,20 +30,15 @@ GameState * Game::PeekState() const
 	return states.top();
 }
 
-void Game::UpdateConfig(const GameConfig newConfig)
+void Game::UpdateConfig(const std::vector<int> newConfig)
 {
 	config = newConfig;
 
-	std::ofstream update("config.txt", std::ios::trunc);
+	std::ofstream update("config.txt", std::ios::trunc, std::ios::binary);
 	
-	// Not sure if this the cleanest solution. It's the best I could come up with.
-	update << config.up << '\n'
-		<< config.left << '\n'
-		<< config.down << '\n'
-		<< config.right << '\n'
-		<< config.jump << '\n'
-		<< config.shoot;
-
+	for (auto aConfig : newConfig)
+		update << aConfig << ' ';
+	 
 	update.close();
 }
 
@@ -95,53 +90,39 @@ Game::~Game()
 
 void Game::BootConfig()
 {
-	std::ifstream checkConfig("config.txt", std::ios::beg);
-	if (checkConfig) {
-		std::string configLine;
-		std::vector<int> configInts;
-		configInts.reserve(6);
+	std::ifstream checkConfig("config.txt", std::ios::beg, std::ios::binary);
 
-		// Loads the file into a vector
-		while (std::getline(checkConfig, configLine)) {
-			configInts.push_back(std::stoi(configLine));
+	if (checkConfig) {
+		int val;
+		while (checkConfig) {
+			checkConfig >> val;
+			if (val > sf::Keyboard::Z) {
+				// TODO: Tell config file is modified externally and may be corrupt
+			}
+			config.push_back(val);
 		}
-		// Checks if config file isn't modified externally (by checking the length)
-		if (configInts.size() > 7) {
-			// TODO: Tell that config file was corrupt
+		config.pop_back();
+			checkConfig.close();
+		if (config.size() != 6) {
+			// TODO: Tell config file was corrupt 
 			DefaultConfig();
 		}
-		// Loads old config file
-		else {
-			GameConfig tempConfig;
-			
-			tempConfig.up = (sf::Keyboard::Key)configInts[0];
-			tempConfig.left = (sf::Keyboard::Key)configInts[1];
-			tempConfig.down = (sf::Keyboard::Key)configInts[2];
-			tempConfig.right = (sf::Keyboard::Key)configInts[3];
-			
-			tempConfig.jump = (sf::Keyboard::Key)configInts[4];
-			tempConfig.shoot = (sf::Mouse::Button)configInts[5];
-
-			UpdateConfig(tempConfig);	
-		}
 	}
-	else
-	{
+	else {
 		DefaultConfig();
 	}
-	checkConfig.close();
 }
 
 void Game::DefaultConfig()
 {
-	GameConfig tempConfig;
-	tempConfig.up = sf::Keyboard::W;
-	tempConfig.left = sf::Keyboard::A;
-	tempConfig.down = sf::Keyboard::S;
-	tempConfig.right = sf::Keyboard::D;
+	std::vector<int> tempConfig;
+	tempConfig.push_back(sf::Keyboard::W);
+	tempConfig.push_back(sf::Keyboard::A);
+	tempConfig.push_back(sf::Keyboard::S);
+	tempConfig.push_back(sf::Keyboard::D);
 
-	tempConfig.jump = sf::Keyboard::Space;
-	tempConfig.shoot = sf::Mouse::Button::Left;
+	tempConfig.push_back(sf::Keyboard::Space);
+	tempConfig.push_back(sf::Mouse::Button::Left);
 
 	UpdateConfig(tempConfig);
 }

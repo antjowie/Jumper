@@ -3,20 +3,16 @@
 #include "TextureManager.h"
 #include <SFML\Graphics.hpp>
 #include <stack>
+#include <vector>
 
 class Game
 {
 public:
-	struct GameConfig {
-		sf::Keyboard::Key up, left, down, right, jump;
-		sf::Mouse::Button shoot;
-		bool debugMode;
-	};
-
 	sf::RenderWindow window;
 
+	//0 is up, 1 is left, 2 is down, 3 is right, 4 is jump, 5 is shoot
+	std::vector<int> config;
 	TextureManager texmngr;
-	GameConfig config;
 
 	bool PopThisState;
 	
@@ -25,7 +21,7 @@ public:
 	void SwitchState(GameState* const state);
 	GameState* PeekState() const;
 
-	void UpdateConfig(const GameConfig newConfig);
+	void UpdateConfig(const std::vector<int> newConfig);
 
 	void Loop();
 

@@ -12,7 +12,7 @@ void GameStatePlay::Input()
 			break;
 
 		case sf::Event::MouseButtonPressed:
-			if (event.mouseButton.button == game->config.shoot); //TODO: Make shoot function
+			if (event.mouseButton.button == game->config[5]); //TODO: Make shoot function
 			break;
 
 		case sf::Event::Resized:
@@ -20,19 +20,20 @@ void GameStatePlay::Input()
 			break;
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(game->config.up)) movement -= sf::Vector2f(0, 2.f);
-	if (sf::Keyboard::isKeyPressed(game->config.left)) movement -= sf::Vector2f(2.f, 0);
-	if (sf::Keyboard::isKeyPressed(game->config.down))	movement += sf::Vector2f(0, 2.f);
-	if (sf::Keyboard::isKeyPressed(game->config.right)) movement += sf::Vector2f(2.f, 0);
-	if (sf::Keyboard::isKeyPressed(game->config.jump)) movement += sf::Vector2f(0, -2.f);
+
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)game->config[0])) movement -= sf::Vector2f(0, 2.f);
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)game->config[1])) movement -= sf::Vector2f(2.f, 0);
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)game->config[2]))movement += sf::Vector2f(0, 2.f);
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)game->config[3])) movement += sf::Vector2f(2.f, 0);
+	if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)game->config[4])) movement += sf::Vector2f(0, -2.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) game->PopThisState = true;
 
 	movement*= 0.8f;
 	if (movement.x < 0.1f && movement.x > -0.1f) movement.x = 0;
 	if (movement.y < 0.1f && movement.y > -0.1f) movement.y = 0;
 
-	scrollMoved.x += (int)movement.x * 0.2f;
-	scrollMoved.y += (int)movement.y * 0.2f;
+	scrollMoved.x += int(movement.x * 0.2f);
+	scrollMoved.y += int(movement.y * 0.2f);
 	if(scrollMoved.y > 0) scrollMoved.y = 0;
 	else if (scrollMoved.y < -360) scrollMoved.y = -360;
 }
@@ -61,7 +62,7 @@ void GameStatePlay::Resize()
 {
 	view.setSize((sf::Vector2f)game->window.getSize());
 	view.setCenter((sf::Vector2f)game->window.getSize() * 0.5f);
-	scrollBackground.setScale(game->window.getSize().x / 640, game->window.getSize().y / (scrollBackground.getLocalBounds().height / 2));
+	scrollBackground.setScale((float)game->window.getSize().x / 640, game->window.getSize().y / (scrollBackground.getLocalBounds().height / 2.f));
 	// 1280 is the fixed size of the scrollBackground to show
 }
 

@@ -33,5 +33,5 @@ Player::Player(const sf::Texture& texture, const std::vector<Animation> animatio
 	for (auto animation : animations) {
 		anim.AddAnimation(animation);
 	}
-	sprite.setScale(2, 2);
+	sprite.setScale(3, 3);
 }

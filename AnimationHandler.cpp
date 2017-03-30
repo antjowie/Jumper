@@ -47,7 +47,7 @@ void AnimationHandler::Update(const float dt)
 		rect.top = rect.height * currentAnim;
 		currentFrame = rect;
 	}
-
+	
 	elapsed += dt;
 	if (elapsed > duration * animations[currentAnim].GetLength())
 		fmod(elapsed, duration);
